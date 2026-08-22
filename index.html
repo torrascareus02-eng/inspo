@@ -280,7 +280,7 @@
   <main id="main"></main>
   <div class="empty" id="empty" hidden>
     <div class="big">灵感库还是空的</div>
-    <div>在 Claude Code 里发送 <code>/reel Instagram链接</code>,提取结果会自动出现在这里。</div>
+    <div>在 Codex 里发送 <code>Instagram链接</code>,提取结果会自动出现在这里。</div>
   </div>
 </div>
 <div class="toast" id="toast">已复制</div>
@@ -371,7 +371,7 @@ function fallbackCopy(text, done) {
 
 async function saveBgm(e, btn) {
   const downloads = window.claude ? await claude.use("downloads") : null;
-  if (!downloads) { toastMsg("此环境不支持下载,请在 Claude Code 里说「发我音频」"); return; }
+  if (!downloads) { toastMsg("此环境不支持下载,请在 Codex 里说「发我音频」"); return; }
   try {
     btn.disabled = true;
     const b64 = e.bgm.datauri.split(",")[1];
@@ -384,7 +384,7 @@ async function saveBgm(e, btn) {
   } catch (err) {
     if (err && err.code === "declined") {}
     else if (err && err.code === "rate_limited") toastMsg("请稍等几秒再试");
-    else toastMsg("下载暂不可用,请在 Claude Code 里说「发我音频」");
+    else toastMsg("下载暂不可用,请在 Codex 里说「发我音频」");
   } finally {
     btn.disabled = false;
   }
