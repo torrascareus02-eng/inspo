@@ -57,6 +57,8 @@
   h1 { font-size: 24px; font-weight: 700; margin: 0; letter-spacing: 0.01em; }
   h1 .dot { color: var(--accent); }
   .count { color: var(--muted); font-size: 13px; margin-right: auto; }
+  .calendar-nav { color: var(--accent); border: 1px solid var(--accent); background: var(--accent-soft); border-radius: 9px; padding: 5px 12px; font-size: 13px; text-decoration: none; font-weight: 600; }
+  .calendar-nav:hover { background: var(--accent); color: #fff; }
 
   .view-toggle { display: flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
   .view-toggle button {
@@ -260,6 +262,7 @@
   <header class="top">
     <h1>Reels 灵感库<span class="dot">.</span></h1>
     <span class="count" id="count"></span>
+    <a class="calendar-nav" href="calendar.html">◷ 发布日历</a>
     <div class="view-toggle" role="tablist" aria-label="视图">
       <button id="vt-read" role="tab">详读</button>
       <button id="vt-wall" role="tab">封面墙</button>
