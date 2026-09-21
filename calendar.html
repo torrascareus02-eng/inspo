@@ -29,6 +29,7 @@
 <style>
 .nav a[href="viewer.html"]{margin-top:12px;border:1px solid rgba(246,160,141,.32);background:rgba(246,160,141,.12);color:#fff;font-weight:700}.nav a[href="viewer.html"]:hover{background:var(--coral);border-color:var(--coral)}
 </style>
+<style>.quick-add.preset .quick-tools{grid-template-columns:repeat(2,minmax(0,1fr))}</style>
 </head>
 <body>
 <div class="app">
@@ -93,4 +94,6 @@ const accountEditorOpenModal=openModal;function updateEditorCopy(){const isShoot
 </script><script>
 /* Choose the workflow before opening the editor; the editor then stays focused on that workflow. */
 const typeField=$('#type').closest('label');typeField.style.display='none';const newShootBtn=$('#addBtn');newShootBtn.textContent='＋ 新建拍摄';newShootBtn.onclick=()=>openModal({type:'shoot'});const newPublishBtn=document.createElement('button');newPublishBtn.className='btn';newPublishBtn.textContent='＋ 新建发布';newPublishBtn.onclick=()=>openModal({type:'publish'});newShootBtn.before(newPublishBtn);
+</script><script>
+quickAdd=function(cell,date){document.querySelectorAll('.quick-add').forEach(x=>x.remove());const presetType=filter==='shoot'||filter==='publish'?filter:null,selectedAccount=accountFilter==='all'?'ig-official':accountFilter;const box=document.createElement('div');box.className='quick-add'+(presetType?' preset':'');box.innerHTML=presetType?`<input aria-label="输入计划标题" placeholder="直接输入${presetType==='shoot'?'拍摄':'发布'}计划…"><div class="quick-tools"><button title="保存">保存${presetType==='shoot'?'拍摄':'发布'}</button><button type="button" title="打开完整填写面板">完整填写</button></div>`:'<input aria-label="输入计划标题" placeholder="直接输入计划…"><div class="quick-tools"><select aria-label="选择动作"><option value="shoot">拍摄</option><option value="publish">发布</option></select><button title="保存">保存</button><button type="button" title="打开完整填写面板">完整填写</button></div>';box.onclick=ev=>ev.stopPropagation();const input=box.querySelector('input'),action=box.querySelector('select');const type=()=>presetType||action.value;const saveQuick=()=>{const title=input.value.trim();if(!title){input.focus();return}plans.push({id:'p'+Date.now(),date,type:type(),title,status:'todo',note:'',account:selectedAccount});save();render()};box.querySelectorAll('button')[1].onclick=ev=>{ev.stopPropagation();box.remove();openModal({date,type:type(),title:input.value.trim(),status:'todo',note:'',account:selectedAccount})};input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();saveQuick()}if(e.key==='Escape')box.remove()});box.querySelector('button').onclick=saveQuick;cell.appendChild(box);input.focus()};
 </script><script>document.querySelector('.nav a[href="viewer.html"]').href='index.html';document.addEventListener('click',ev=>{if(!ev.target.closest('.calendar'))document.querySelectorAll('.quick-add').forEach(x=>x.remove())});</script></body></html>
