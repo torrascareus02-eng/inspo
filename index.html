@@ -343,7 +343,9 @@ function fieldContent(e, key) {
 }
 
 function visibleEntries() {
-  let list = DATA.entries.slice().reverse();
+  let list = DATA.entries.slice().sort((a, b) =>
+    String(b.added || "").localeCompare(String(a.added || ""))
+  );
   if (state.cat !== "_all") list = list.filter(e => e.category === state.cat);
   if (state.q) list = list.filter(e => entryText(e).includes(state.q));
   return list;
