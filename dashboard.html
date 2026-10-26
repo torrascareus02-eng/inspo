@@ -184,3 +184,4 @@ cleanReviewStatusWords();
 const reviewRoot=document.querySelector('#review');
 if(reviewRoot){new MutationObserver(()=>requestAnimationFrame(()=>{mountIpadReview();syncIpadReviewCopy();cleanReviewStatusWords();syncWeeklyReviewAccount()})).observe(reviewRoot,{childList:true,subtree:true});}
 </script>
+<script>function applyDetailedWeeklyReviewFinal(){const review=document.querySelector('.weekly-review');if(!review||review.dataset.copyVersion==='detailed-v4')return;const details=review.querySelectorAll('details');if(details.length<2)return;details[0].innerHTML=DETAILED_LAYLA_HTML;details[1].innerHTML=DETAILED_ACCESSORIES_HTML;review.dataset.copyVersion='detailed-v4'}applyDetailedWeeklyReviewFinal();const finalReviewRoot=document.querySelector('#review');if(finalReviewRoot){new MutationObserver(()=>requestAnimationFrame(applyDetailedWeeklyReviewFinal)).observe(finalReviewRoot,{childList:true,subtree:true})}</script>
