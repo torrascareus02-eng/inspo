@@ -157,8 +157,6 @@ function mountWeeklyReview(){
   }
   if(review&&review.previousElementSibling!==target) target.after(review);
 }
-if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',mountWeeklyReview);
-else mountWeeklyReview();
 function syncWeeklyReviewAccount(){
   const review=document.querySelector('.weekly-review');
   if(!review) return;
