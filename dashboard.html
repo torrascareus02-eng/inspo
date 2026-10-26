@@ -160,4 +160,17 @@ function mountWeeklyReview(){
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',mountWeeklyReview);
 else mountWeeklyReview();
 new MutationObserver(mountWeeklyReview).observe(document.body,{childList:true,subtree:true});
+function syncWeeklyReviewAccount(){
+  const review=document.querySelector('.weekly-review');
+  if(!review) return;
+  const details=review.querySelectorAll('details');
+  const selected=state.author;
+  details.forEach((detail,index)=>{detail.hidden=selected!=='all'&&((selected==='@laylaspalette'&&index!==0)||(selected==='@torras_accessories'&&index!==1));});
+  const final=review.querySelector('.review-final');
+  if(final) final.hidden=selected!=='all';
+  const label=review.querySelector('.review-date');
+  if(label) label.textContent=selected==='@laylaspalette'?'Layla｜素人号':selected==='@torras_accessories'?'Accessories｜官号':'Layla｜素人号 · Accessories｜官号';
+}
+new MutationObserver(syncWeeklyReviewAccount).observe(document.body,{childList:true,subtree:true});
+syncWeeklyReviewAccount();
 </script>
