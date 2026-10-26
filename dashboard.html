@@ -110,6 +110,7 @@ setTimeout(removeUnstable25ReviewItems,1000);
 setTimeout(removeUnstable25ReviewItems,2500);
 const unstableReviewRoot=document.querySelector('#review');
 if(unstableReviewRoot)new MutationObserver(()=>requestAnimationFrame(removeUnstable25ReviewItems)).observe(unstableReviewRoot,{childList:true,subtree:true});
+if(document.body)new MutationObserver(()=>requestAnimationFrame(removeUnstable25ReviewItems)).observe(document.body,{childList:true,subtree:true});
 window.addEventListener('load',()=>{
   setTimeout(removeUnstable25ReviewItems,500);
   setTimeout(removeUnstable25ReviewItems,2000);
