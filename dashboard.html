@@ -190,15 +190,22 @@ function applyDetailedWeeklyReviewFinal(){
   if(!review)return;
   const details=review.querySelectorAll('details');
   if(details.length<2)return;
+  if(typeof applyDetailedWeeklyReview==='function')applyDetailedWeeklyReview=()=>{};
   if(review.dataset.copyVersion!=='detailed-v6'){
     details[0].innerHTML=DETAILED_LAYLA_HTML;
     details[1].innerHTML=DETAILED_ACCESSORIES_HTML;
-    const pending=Array.from(details[0].children);
-    const heading=pending.find(node=>node.tagName==='H4'&&node.textContent.startsWith('10 月 25 日'));
-    if(heading){
-      let node=heading;
-      while(node){const next=node.nextElementSibling;node.remove();if(next?.tagName==='H4')break;node=next;}
-    }
+    details.forEach(detail=>{
+      const pending=Array.from(detail.children);
+      const heading=pending.find(node=>node.tagName==='H4'&&node.textContent.startsWith('10 月 25 日'));
+      if(heading){
+        let node=heading;
+        while(node){const next=node.nextElementSibling;node.remove();if(next?.tagName==='H4')break;node=next;}
+      }
+    });
+    const ipadSummary=details[2]?.querySelector('h4');
+    if(ipadSummary&&ipadSummary.textContent.startsWith('本周数据总览'))ipadSummary.textContent='本周数据总览｜3 条已稳定素材｜5,562 播放｜平均 1,854 播放';
+    const ipadIntro=ipadSummary?.nextElementSibling;
+    if(ipadIntro)ipadIntro.textContent='本周先看 10 月 22 日、23 日和 24 日三条已稳定素材。10 月 24 日和 10 月 22 日两条贡献了 5,167 播放，占这三条约 93%。10 月 25 日素材仍在观察，暂不纳入内容判断。';
     review.dataset.copyVersion='detailed-v6';
   }
 }
