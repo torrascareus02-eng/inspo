@@ -159,7 +159,6 @@ function mountWeeklyReview(){
 }
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',mountWeeklyReview);
 else mountWeeklyReview();
-new MutationObserver(mountWeeklyReview).observe(document.body,{childList:true,subtree:true});
 function syncWeeklyReviewAccount(){
   const review=document.querySelector('.weekly-review');
   if(!review) return;
@@ -171,7 +170,7 @@ function syncWeeklyReviewAccount(){
   const label=review.querySelector('.review-date');
   if(label) label.textContent=selected==='@laylaspalette'?'Layla｜素人号':selected==='@torras_accessories'?'Accessories｜官号':'Layla｜素人号 · Accessories｜官号';
 }
-new MutationObserver(syncWeeklyReviewAccount).observe(document.body,{childList:true,subtree:true});
+mountWeeklyReview();
 syncWeeklyReviewAccount();
 document.querySelector('#account-filter')?.addEventListener('change',()=>requestAnimationFrame(syncWeeklyReviewAccount));
 </script>
