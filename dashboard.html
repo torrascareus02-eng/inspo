@@ -73,3 +73,6 @@ if(sharedApi)pullShared();
 <script>
 if(!localStorage.getItem('torras-dashboard-migrated-v2')){localStorage.removeItem('torras-dashboard-entries-v1');localStorage.removeItem('torras-dashboard-metrics-v1');localStorage.setItem('torras-dashboard-migrated-v2','1');location.reload()}
 </script>
+<script>
+const formSubmit=$('entry-form').onsubmit;$('entry-form').onsubmit=event=>{const tags=$('f-tags').value.trim().split(/[\s,，]+/).filter(Boolean);formSubmit(event);setTimeout(()=>{const last=saved[saved.length-1];if(last){last.tags=tags;localStorage.setItem(STORE,JSON.stringify(saved));render()}},10)};
+</script>
