@@ -150,8 +150,15 @@ const WEEKLY_REVIEW_HTML=`<section class="weekly-review"><h3>本周内容复盘<
 function mountWeeklyReview(){
   const target=document.querySelector('#review');
   const dataDetail=target?.querySelector('.data-card');
-  if(dataDetail&&!target.querySelector('.weekly-review')) dataDetail.insertAdjacentHTML('afterend',WEEKLY_REVIEW_HTML);
+  if(!target||!dataDetail) return;
+  let review=target.querySelector('.weekly-review');
+  if(!review){
+    dataDetail.insertAdjacentHTML('afterend',WEEKLY_REVIEW_HTML);
+    review=target.querySelector('.weekly-review');
+  }
+  if(review&&review.previousElementSibling!==dataDetail) dataDetail.after(review);
 }
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',mountWeeklyReview);
 else mountWeeklyReview();
+new MutationObserver(mountWeeklyReview).observe(document.body,{childList:true,subtree:true});
 </script>
