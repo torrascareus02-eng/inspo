@@ -130,3 +130,7 @@ const formSubmit=$('entry-form').onsubmit;$('entry-form').onsubmit=event=>{const
 function previewTableVideos(){document.querySelectorAll('#rows video.cover').forEach(video=>{video.muted=true;video.autoplay=true;video.loop=true;video.playsInline=true;video.play().catch(()=>{})})}
 previewTableVideos();new MutationObserver(previewTableVideos).observe($('rows'),{childList:true});
 </script>
+<script>
+function fixPublishedVideoPaths(){if(!location.hostname.endsWith('github.io'))return;document.querySelectorAll('video').forEach(video=>{const src=video.getAttribute('src')||'';if(src.includes('/site/assets/')){video.setAttribute('src',src.replace('/site/assets/','/assets/'));video.load()}})}
+fixPublishedVideoPaths();new MutationObserver(fixPublishedVideoPaths).observe(document.body,{childList:true,subtree:true});
+</script>
