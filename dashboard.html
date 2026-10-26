@@ -93,6 +93,11 @@ const safeEditMetric=editMetric;editMetric=(entry,key,cell)=>{if(entry)safeEditM
 document.querySelector('.entry-panel summary').textContent='＋ 录入无法自动读取的互动数据（播放 / 点赞 / 评论 / 收藏 / 转发）';
 </script>
 <script>
+const rawReviewDiagnosis=reviewDiagnosis;reviewDiagnosis=(entry,good)=>rawReviewDiagnosis(entry,good).replace(/<p><b>下一条<\/b>.*?<\/p>/,'');
+function cleanReviewCopy(){const root=document.body;if(!root)return;const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);const replacements=[['只看当前筛选里实际录入的数据','当前筛选数据'],['线上已同步数据','当前数据'],['已录入点赞率','点赞率'],['已录入 ',''],['已同步播放','播放'],['已同步',''],['待同步','—'],['链接数据','']];const nodes=[];let node;while(node=walker.nextNode())nodes.push(node);nodes.forEach(text=>{let value=text.nodeValue;replacements.forEach(([from,to])=>{value=value.split(from).join(to)});if(value!==text.nodeValue)text.nodeValue=value})}
+new MutationObserver(cleanReviewCopy).observe(document.body,{childList:true,subtree:true});cleanReviewCopy();
+</script>
+<script>
 $('add-link').onclick=()=>{const url=$('link-input').value.trim();if(!url)return $('link-input').focus();const today=new Date().toISOString().slice(0,10),item={id:'manual-'+Date.now(),url,author:'',date:today,added:today,caption:'',metrics:{}};saved.push(item);localStorage.setItem(STORE,JSON.stringify(saved));syncUp(item);$('link-input').value='';render();prefill(item)};
 </script>
 <script>
