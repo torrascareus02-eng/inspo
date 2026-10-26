@@ -190,10 +190,16 @@ function applyDetailedWeeklyReviewFinal(){
   if(!review)return;
   const details=review.querySelectorAll('details');
   if(details.length<2)return;
-  if(review.dataset.copyVersion!=='detailed-v5'){
+  if(review.dataset.copyVersion!=='detailed-v6'){
     details[0].innerHTML=DETAILED_LAYLA_HTML;
     details[1].innerHTML=DETAILED_ACCESSORIES_HTML;
-    review.dataset.copyVersion='detailed-v5';
+    const pending=Array.from(details[0].children);
+    const heading=pending.find(node=>node.tagName==='H4'&&node.textContent.startsWith('10 月 25 日'));
+    if(heading){
+      let node=heading;
+      while(node){const next=node.nextElementSibling;node.remove();if(next?.tagName==='H4')break;node=next;}
+    }
+    review.dataset.copyVersion='detailed-v6';
   }
 }
 applyDetailedWeeklyReviewFinal();
