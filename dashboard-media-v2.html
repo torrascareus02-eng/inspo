@@ -97,9 +97,10 @@ $('search').oninput=e=>{state.q=e.target.value.trim().toLowerCase();render()};$(
   };
   const apply=()=>document.querySelectorAll('#rows tr').forEach(row=>{
     const href=row.querySelector('a.open')?.href||'',id=Object.keys(metrics).find(key=>href.includes(key));
-    if(!id)return;const cells=row.querySelectorAll('td.num'),[watch,completion]=metrics[id];
-    if(cells[2]&&!cells[2].textContent.includes(`${watch}s`))cells[2].innerHTML=`<span class="sub">平均观看时长</span><br>${watch}s`;
-    if(cells[3]&&!cells[3].textContent.includes(`${completion}%`))cells[3].innerHTML=`<span class="sub">完播率</span><br>${completion}%`;
+    if(!id)return;const [watch,completion]=metrics[id];
+    const watchCell=row.querySelector('td[data-metric="avgWatchTime"]'),completionCell=row.querySelector('td[data-metric="completionRate"]');
+    if(watchCell&&!watchCell.textContent.includes(`${watch}s`))watchCell.innerHTML=`<span class="sub">平均观看时长</span><br>${watch}s`;
+    if(completionCell&&!completionCell.textContent.includes(`${completion}%`))completionCell.innerHTML=`<span class="sub">完播率</span><br>${completion}%`;
   });
   const run=()=>{apply();setTimeout(apply,300);setTimeout(apply,1000)};
   window.addEventListener('load',run);new MutationObserver(run).observe(document.querySelector('#rows')||document.body,{childList:true,subtree:true});
