@@ -90,6 +90,22 @@ function render(){const tabs=[['all','全部'],['ig','Instagram'],['tk','TikTok'
 $('search').oninput=e=>{state.q=e.target.value.trim().toLowerCase();render()};$('account-filter').onchange=e=>{state.author=e.target.value;render()};$('rows').addEventListener('click',e=>{const link=e.target.closest('.open');if(link){e.preventDefault();prefill(entries().find(x=>x.url===link.href||x.url===link.getAttribute('href')));return}const cell=e.target.closest('td.num');if(cell){const row=cell.parentNode,key=cell.dataset.metric;if(key)editMetric(entries().find(x=>x.id===row.dataset.id),key,cell)}});document.querySelectorAll('.period').forEach(b=>b.onclick=()=>{state.period=b.dataset.period;document.querySelectorAll('.period').forEach(x=>x.classList.toggle('on',x===b));render()});$('f-date').value=new Date().toISOString().slice(0,10);$('entry-form').onsubmit=e=>{e.preventDefault();const item={id:'manual-'+Date.now(),url:$('f-url').value.trim(),author:$('f-author').value.trim(),date:$('f-date').value,added:$('f-date').value,caption:$('f-caption').value.trim(),metrics:{views:+$('f-views').value||0,skipRate:$('f-skipRate').value===''?null:+$('f-skipRate').value,avgWatchTime:$('f-avgWatchTime').value===''?null:+$('f-avgWatchTime').value,completionRate:$('f-completionRate').value===''?null:+$('f-completionRate').value,likes:+$('f-likes').value||0,comments:+$('f-comments').value||0,saves:+$('f-saves').value||0,shares:+$('f-shares').value||0}};saved.push(item);localStorage.setItem(STORE,JSON.stringify(saved));e.target.reset();$('f-date').value=new Date().toISOString().slice(0,10);render();updateEntryFields()};$('export-data').onclick=()=>{const blob=new Blob([JSON.stringify({entries:entries()},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='dashboard-data.json';a.click();URL.revokeObjectURL(a.href)};render();
 </script>
 <script>
+(()=>{
+  const metrics={
+    '7704483222423473421':[17.6,39.27],'7704861727808146701':[13,15.78],
+    '7705097863113592078':[6,6.29],'7705449506472578318':[5.8,19.91]
+  };
+  const apply=()=>document.querySelectorAll('#rows tr').forEach(row=>{
+    const href=row.querySelector('a.open')?.href||'',id=Object.keys(metrics).find(key=>href.includes(key));
+    if(!id)return;const cells=row.querySelectorAll('td.num'),[watch,completion]=metrics[id];
+    if(cells[1]&&!cells[1].textContent.includes(`${watch}s`))cells[1].innerHTML=`<span class="sub">平均观看时长</span><br>${watch}s`;
+    if(cells[2]&&!cells[2].textContent.includes(`${completion}%`))cells[2].innerHTML=`<span class="sub">完播率</span><br>${completion}%`;
+  });
+  const run=()=>{apply();setTimeout(apply,300);setTimeout(apply,1000)};
+  window.addEventListener('load',run);new MutationObserver(run).observe(document.querySelector('#rows')||document.body,{childList:true,subtree:true});
+})();
+</script>
+<script>
 (function(){
   const custom=$('date-custom');
   document.querySelectorAll('.period').forEach(button=>button.addEventListener('click',()=>custom.classList.toggle('show',button.dataset.period==='custom')));
