@@ -113,8 +113,9 @@ $('search').oninput=e=>{state.q=e.target.value.trim().toLowerCase();render()};$(
   ['date-from','date-to'].forEach(id=>$(id).addEventListener('change',event=>{state[id==='date-from'?'dateFrom':'dateTo']=event.target.value;state.period='custom';custom.classList.add('show');document.querySelectorAll('.period').forEach(x=>x.classList.toggle('on',x.dataset.period==='custom'));render()}));
   $('account-filter').addEventListener('change',()=>{state.dateFrom='';state.dateTo='';$('date-from').value='';$('date-to').value='';custom.classList.remove('show')});
 
-  const loadVideo=video=>{if(video.dataset.src&&!video.src){video.src=video.dataset.src;video.load()}};
-  const prepareVideos=root=>{(root||document).querySelectorAll('video').forEach(video=>{if(video.dataset.lazyReady)return;const src=video.getAttribute('src');if(!src)return;video.dataset.src=src;video.removeAttribute('src');video.preload='none';video.dataset.lazyReady='1';video.addEventListener('pointerdown',()=>loadVideo(video),{once:true})})};
+  const publicVideoSrc=src=>{if(!src)return src;return location.hostname.endsWith('github.io')?src.replace(/^\/?site\/assets\//,'/assets/'):src};
+  const loadVideo=video=>{if(video.dataset.src&&!video.src){video.src=publicVideoSrc(video.dataset.src);video.load()}};
+  const prepareVideos=root=>{(root||document).querySelectorAll('video').forEach(video=>{if(video.dataset.lazyReady)return;const src=video.getAttribute('src');if(!src)return;video.dataset.src=publicVideoSrc(src);video.removeAttribute('src');video.preload='none';video.dataset.lazyReady='1';video.addEventListener('pointerdown',()=>loadVideo(video),{once:true})})};
   const videoObserver=new IntersectionObserver(items=>items.forEach(item=>{if(item.isIntersecting){loadVideo(item.target);videoObserver.unobserve(item.target)}}),{rootMargin:'500px'});
   const observeVideos=()=>{prepareVideos(document);document.querySelectorAll('video[data-src]').forEach(video=>videoObserver.observe(video))};
   observeVideos();
