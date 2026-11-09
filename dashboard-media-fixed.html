@@ -1,0 +1,16 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>视频数据看板</title>
+<script>
+(async()=>{
+  const response=await fetch('dashboard-media-v2.html?source=fixed-entry');
+  if(!response.ok) throw new Error('dashboard unavailable');
+  const html=(await response.text()).replaceAll('site/assets/','assets/');
+  document.open();
+  document.write(html);
+  document.close();
+})().catch(error=>{
+  document.body.textContent='页面加载失败，请刷新后重试。';
+  console.error(error);
+});
+</script>
