@@ -282,3 +282,16 @@ window.addEventListener('load',()=>{
   setTimeout(applyDetailedWeeklyReviewFinal,3000);
 });
 </script>
+<script>
+// Shared-sheet metric compatibility: keep TikTok watch-time fields when reading older sheets.
+(()=>{
+  const metricAliases={views:['views','播放','播放量'],avgWatchTime:['avgWatchTime','average_watch_time','avg_watch_time','平均观看时长'],completionRate:['completionRate','completion_rate','full_video_watched_rate','完播率'],retention3s:['retention3s','retention_3s','3s留存率'],likes:['likes','点赞'],comments:['comments','评论'],saves:['saves','收藏'],shares:['shares','转发']};
+  const normalize=item=>{const source={...item},metrics={...(item.metrics||{})};Object.entries(metricAliases).forEach(([target,aliases])=>{const key=aliases.find(name=>source[name]!==undefined&&source[name]!==null&&source[name]!=='');if(key){metrics[target]=Number(source[key])||0;delete source[key]}});source.metrics=metrics;return source};
+  const parseRows=rows=>rows.map((row,index)=>{const item=normalize(row);item.id=String(item.id||`sheet-${index}`);return item}).filter(item=>item.id);
+  const parseGoogle=text=>{const json=text.replace(/^.*?\{/,'{').replace(/\);?\s*$/,'');const table=JSON.parse(json).table;const cols=table.cols.map(col=>String(col.label||'').trim());return parseRows(table.rows.map(row=>Object.fromEntries(cols.map((col,i)=>[col,row.c?.[i]?.v??'']))))};
+  const parseCsvText=text=>{const rows=[];let row=[],cell='',quoted=false;for(let i=0;i<text.length;i++){const c=text[i],n=text[i+1];if(c==='"'&&quoted&&n==='"'){cell+='"';i++;continue}if(c==='"'){quoted=!quoted;continue}if(c===','&&!quoted){row.push(cell);cell='';continue}if((c==='\n'||c==='\r')&&!quoted){if(c==='\r'&&n==='\n')i++;row.push(cell);if(row.some(Boolean))rows.push(row);row=[];cell='';continue}cell+=c}if(cell!==''||row.length){row.push(cell);rows.push(row)}if(!rows.length)return[];const headers=rows.shift().map(v=>v.trim());return parseRows(rows.map(values=>Object.fromEntries(headers.map((key,i)=>[key,values[i]??'']))))};
+  const oldPull=window.pullShared;
+  window.pullShared=async()=>{if(!sharedApi)return syncStatus('请先粘贴共享接口地址。',true);const endpoint=sheetEndpoint(sharedApi),csvEndpoint=sheetCsvEndpoint(sharedApi);if(!endpoint)return oldPull();syncStatus('正在读取共享表格…');try{let response=await fetch(endpoint,{cache:'no-store'});let text=await response.text(),remote;try{remote=parseGoogle(text)}catch{response=await fetch(csvEndpoint,{cache:'no-store'});remote=parseCsvText(await response.text())}const localById=new Map(DATA.entries.map(item=>[item.id,item]));const remoteIds=new Set(remote.map(item=>item.id));DATA.entries=[...remote.map(item=>{const base=localById.get(item.id)||{};return {...base,...item,metrics:{...(base.metrics||{}),...(item.metrics||{})}}),...DATA.entries.filter(item=>!remoteIds.has(item.id))];render();syncStatus('网站看板已同步 '+remote.length+' 条共享数据：'+new Date().toLocaleTimeString())}catch(error){syncStatus('读取失败：请确认共享表格可查看。',true)}};
+  window.pullShared();
+})();
+</script>
